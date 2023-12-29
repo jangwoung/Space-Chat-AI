@@ -10,7 +10,7 @@ import Input from '../Home/components/input'
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY);
 
-// 待機
+// 待機-
 const _sleep = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // 乱数生成
@@ -35,7 +35,7 @@ const Home = () => {
     setAnswerWait(true)
     setAiAnswer("")
     
-    getAnswer()
+    run(sendQuestionText)
   }
   
   // Gemini
@@ -50,13 +50,8 @@ const Home = () => {
   
     setAiAnswer(text)
     setAnswerWait(false)
-  }
 
-  // 解答の取得
-  const getAnswer = async() => {
-    run(sendQuestionText)
-    console.log(aiAnswer)
-    showAnswer(aiAnswer)
+    showAnswer(text)
   }
 
   // 解答の表示
