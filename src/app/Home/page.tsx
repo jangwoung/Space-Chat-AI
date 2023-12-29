@@ -1,5 +1,4 @@
 "use client"
-import { NextPage } from 'next'
 import { useState } from 'react'
 
 // components
@@ -11,6 +10,14 @@ import Input from '../Home/components/input'
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY);
 
+// 待機
+const _sleep = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// 乱数生成
+const getRandomInt = (max:number) =>{
+  return Math.floor(Math.random() * max);
+}
+
 const Home = () => {
   const [ answerWait, setAnswerWait ] = useState(false)
   const [ aiAnswer, setAiAnswer ] = useState("")
@@ -18,43 +25,38 @@ const Home = () => {
   const [ inputQuestionText, setInputQuestionText ] = useState("")
   
   
+  // 質問の送信 
+  const sendQuestion = () => {
+    // 入力された文字列を質問に代入して入力値の初期化
+    setSendQuestionText(inputQuestionText)
+    setInputQuestionText("")
+
+    // 解答を待機中に設定し解答の初期化
+    setAnswerWait(true)
+    setAiAnswer("")
+    
+    getAnswer()
+  }
+  
   // Gemini
   async function run(prompt:string) {
     const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-
+  
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+
+    console.log(text);
   
     setAiAnswer(text)
+    setAnswerWait(false)
   }
-
-  // 質問の送信 
-  const sendQuestion = () => {
-    setSendQuestionText(inputQuestionText)
-    console.log(inputQuestionText)
-    setInputQuestionText("")
-    setAnswerWait(true)
-    setAiAnswer("")
-
-    getAnswer()
-  }
-
-  // 待機
-  const _sleep = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   // 解答の取得
   const getAnswer = async() => {
-    setAnswerWait(false)
-    console.log(process.env.NEXT_PUBLIC_API_KEY)
-    await run(sendQuestionText)
-    await _sleep(20000)
+    run(sendQuestionText)
+    console.log(aiAnswer)
     showAnswer(aiAnswer)
-  }
-
-  // 乱数生成
-  const getRandomInt = (max:number) =>{
-    return Math.floor(Math.random() * max);
   }
 
   // 解答の表示
@@ -86,7 +88,6 @@ const Home = () => {
       <div className='flex justify-between w-[84vw] mx-[8vw] my-8'>
         {/* 質問内容の表示欄 */}
         <View 
-          answerWait={answerWait}
           sendQuestionText={sendQuestionText}
         />
         {/* 解答内容の表示欄 */}
@@ -102,9 +103,6 @@ const Home = () => {
         inputQuestionText={inputQuestionText}
         setInputQuestionText={setInputQuestionText}
       />
-
-      
-
     </div>
   )
 }

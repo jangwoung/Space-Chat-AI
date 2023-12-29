@@ -1,7 +1,6 @@
 import { NextPage } from 'next'
 
 interface Props {
-  answerWait: boolean
   sendQuestionText: string 
 }
 
