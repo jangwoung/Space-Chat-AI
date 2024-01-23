@@ -7,7 +7,7 @@ const Header = () => {
     <div className='flex justify-between items-center w-screen h-12 px-8 bg-mauve text-white'>
       {/* title */}
       <div>
-        <Link href={"/Home"}>宇宙語り美少女AI</Link>
+        <Link href={"/"}>宇宙語り美少女AI</Link>
       </div>
 
       {/* etc */}
